@@ -1,0 +1,18 @@
+npm i @reduxjs/toolkit react-redux axios react-toastify react-router-dom react-bootstrap bootstrap react-icons
+
+
+express dotenv mongoose
+cors
+morgan
+bcryptjs 
+
+
+
+
+joi
+multer
+modemailer
+JWT
+
+
+npm i express mongoose cors morgan dotenv bcryptjs
