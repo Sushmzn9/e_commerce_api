@@ -15,6 +15,11 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 
+// api
+
+import adminRouter from "./src/config/router/adminRouter.js";
+app.use("/api/v1/admin", adminRouter);
+
 app.get("/", (req, res) => {
   try {
     res.json({
@@ -27,6 +32,13 @@ app.get("/", (req, res) => {
       message: error.message,
     });
   }
+});
+
+app.use((error, req, res, next) => {
+  res.json({
+    status: "error",
+    message: error.message,
+  });
 });
 
 app.listen(PORT, (error) => {
