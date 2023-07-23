@@ -1,8 +1,14 @@
 import express from "express";
 import { hashPassword } from "../../helper/bcrypt.js";
-import { insertAdmin } from "../../model/admin/AdminModel.js";
-import { newAdminValidation } from "../../middleware/joiValidation.js";
-import { accountVerificationEmail } from "../../helper/nodemailer.js";
+import { insertAdmin, updateAdmin } from "../../model/admin/AdminModel.js";
+import {
+  newAdminValidation,
+  newAdminVerificationValidation,
+} from "../../middleware/joiValidation.js";
+import {
+  accountVerificationEmail,
+  accountVerifiedNotification,
+} from "../../helper/nodemailer.js";
 import { v4 as uuidv4 } from "uuid";
 const router = express.Router();
 
@@ -49,5 +55,41 @@ router.post("/", newAdminValidation, async (req, res, next) => {
     next(error);
   }
 });
+
+//verifiying the new accout
+router.post(
+  "/admin-verification",
+  newAdminVerificationValidation,
+  async (req, res, next) => {
+    try {
+      const { c, e } = req.body;
+      const filter = {
+        email: e,
+        verificationCode: c,
+      };
+      const updateObj = {
+        isVerified: true,
+        verificationCode: "",
+      };
+      const result = await updateAdmin(filter, updateObj);
+
+      if (result?._id) {
+        await accountVerifiedNotification(result);
+        res.json({
+          status: "success",
+          message: "Your account has been verified, you may login now!",
+        });
+
+        return;
+      }
+      res.json({
+        status: "error",
+        message: "Link is expired or invalid!",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default router;

@@ -1,20 +1,22 @@
 import Joi from "joi";
 
+const SHORTSTRREQ = Joi.string().min(3).max(100).required();
+const SHORTSTR = Joi.string().min(3).max(100);
+
 export const newAdminValidation = (req, res, next) => {
   try {
-    //define schema
+    //define the schema
     const schema = Joi.object({
-      fName: Joi.string().required().min(3).max(30),
-      lName: Joi.string().required().min(3).max(30),
-      email: Joi.string().email({ minDomainSegments: 2 }).required(),
-      phone: Joi.string().required(),
-      address: Joi.string().allow(""),
-      password: Joi.string().required().min(6),
+      fName: SHORTSTRREQ,
+      lName: SHORTSTRREQ,
+      email: SHORTSTR.email({ minDomainSegments: 2 }).required(),
+      phone: SHORTSTRREQ,
+      address: SHORTSTR.allow(""),
+      password: SHORTSTRREQ.min(6),
     });
 
     const { error } = schema.validate(req.body);
-    console.log(error);
-    // check data against the rule
+
     error
       ? res.json({
           status: "error",
@@ -26,4 +28,23 @@ export const newAdminValidation = (req, res, next) => {
   }
 };
 
-// make it shorter with define variable like const shorturl = Joi.string()
+export const newAdminVerificationValidation = (req, res, next) => {
+  try {
+    //define the schema
+    const schema = Joi.object({
+      e: SHORTSTRREQ.email({ minDomainSegments: 2 }),
+      c: SHORTSTRREQ,
+    });
+
+    const { error } = schema.validate(req.body);
+
+    error
+      ? res.json({
+          status: "error",
+          message: error.message,
+        })
+      : next();
+  } catch (error) {
+    next(error);
+  }
+};
