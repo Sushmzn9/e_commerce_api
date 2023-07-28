@@ -1,18 +1,13 @@
-import adminSchema from "./AdminSchema.js";
+import CategorySchema from "./CategorySchema.js";
 
-export const insertAdmin = (obj) => {
-  return adminSchema(obj).save();
+export const insertCategory = (obj) => {
+  return CategorySchema(obj).save();
 };
-export const getAdminByEmail = (email) => {
-  return adminSchema.findOne(email);
-};
-export const updateAdminById = ({ _id, ...rest }) => {
-  return adminSchema.findByIdAndUpdate(_id, rest);
-};
+
 //@filter, @updateObj must be an obj
-export const updateAdmin = (filter, updateObj) => {
-  return adminSchema.findOneAndUpdate(filter, updateObj, { new: true });
+export const updateCategory = (filter, updateObj) => {
+  return CategorySchema.findOneAndUpdate(filter, updateObj, { new: true });
 };
-export const deleteAdmin = ({ _id }) => {
-  return adminSchema.findByIdAndDelete(_id);
+export const deleteCategory = ({ _id }) => {
+  return CategorySchema.findByIdAndDelete(_id);
 };

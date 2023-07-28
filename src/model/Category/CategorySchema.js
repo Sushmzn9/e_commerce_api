@@ -17,19 +17,6 @@ const categorySchema = new mongoose.Schema(
       index: 1,
       required: true,
     },
-
-    password: {
-      type: String,
-      required: true,
-    },
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
-    verificationCode: {
-      type: String,
-      default: "",
-    },
   },
   {
     timestamps: true,
