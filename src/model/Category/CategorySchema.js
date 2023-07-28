@@ -1,28 +1,17 @@
 import mongoose from "mongoose";
 
-const adminSchema = new mongoose.Schema(
+const categorySchema = new mongoose.Schema(
   {
     status: {
       type: String,
       default: "inactive",
     },
-    fName: {
+    title: {
       type: String,
       required: true,
     },
-    lName: {
-      type: String,
-      required: true,
-    },
-    phone: {
-      type: Number,
-      required: true,
-    },
-    address: {
-      type: String,
-      default: "",
-    },
-    email: {
+
+    slug: {
       type: String,
       unique: true,
       index: 1,
@@ -47,4 +36,4 @@ const adminSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("Admin", adminSchema);
+export default mongoose.model("Category", categorySchema);
