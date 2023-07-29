@@ -19,3 +19,20 @@ Content-Type: application/json
     "phone":"0404030929",
     "password":"sdscvs"
 }
+
+
+
+###
+POST {{rootAPI}}/category
+Content-Type: application/json
+
+{
+  "title":"Food"
+}
+
+
+###
+GET {{rootAPI}}/category
+
+
+
