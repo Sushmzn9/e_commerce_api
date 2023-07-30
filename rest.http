@@ -34,5 +34,12 @@ Content-Type: application/json
 ###
 GET {{rootAPI}}/category
 
+###
+POST {{rootAPI}}/sign-in
+Content-Type: application/json
 
-
+{
+  
+    "email":"sushan.maharjan18@gmail.com",
+    "password":"123456"
+}

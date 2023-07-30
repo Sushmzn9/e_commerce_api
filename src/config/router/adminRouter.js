@@ -1,7 +1,12 @@
 import express from "express";
-import { hashPassword } from "../../helper/bcrypt.js";
-import { insertAdmin, updateAdmin } from "../../model/admin/AdminModel.js";
+import { comparePassword, hashPassword } from "../../helper/bcrypt.js";
 import {
+  getAdminByEmail,
+  insertAdmin,
+  updateAdmin,
+} from "../../model/admin/AdminModel.js";
+import {
+  loginValidation,
   newAdminValidation,
   newAdminVerificationValidation,
 } from "../../middleware/joiValidation.js";
@@ -10,11 +15,13 @@ import {
   accountVerifiedNotification,
 } from "../../helper/nodemailer.js";
 import { v4 as uuidv4 } from "uuid";
+import { createAcessJWT, createRefreshJWT } from "../../helper/jwt.js";
+import { auth } from "../../middleware/authMiddleware.js";
 const router = express.Router();
 
 // create new admin
 
-router.post("/", newAdminValidation, async (req, res, next) => {
+router.post("/", auth, newAdminValidation, async (req, res, next) => {
   try {
     console.log(req.body);
 
@@ -56,6 +63,20 @@ router.post("/", newAdminValidation, async (req, res, next) => {
   }
 });
 
+//get admin details
+
+router.get("/", auth, (req, re, next) => {
+  try {
+    res.json({
+      status: "success",
+      message: "here is the user info",
+      user: req.userInfo,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 //verifiying the new accout
 router.post(
   "/admin-verification",
@@ -92,4 +113,41 @@ router.post(
   }
 );
 
+router.post("/sign-in", loginValidation, async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    //find the user by email
+
+    const user = await getAdminByEmail({ email });
+    if (user?._id) {
+      //check the password
+      const isMatched = comparePassword(password, user.password);
+
+      if (isMatched) {
+        //create 2 jwts:
+
+        const accessJWT = await createAcessJWT(email);
+        const refreshJWT = await createRefreshJWT(email);
+        console.log(accessJWT);
+        // create accessJWT and store in session table: short live 15m
+        ///create refreshJWT and store with user data in user table: long live 30d
+
+        return res.json({
+          status: "success",
+          message: "logined successfully",
+          token: { accessJWT, refreshJWT },
+        });
+      }
+    }
+
+    // return the jwts
+    res.json({
+      status: "error",
+      message: "Invalid login details",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 export default router;

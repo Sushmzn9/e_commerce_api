@@ -70,3 +70,24 @@ export const updateCatValidation = (req, res, next) => {
     next(error);
   }
 };
+
+export const loginValidation = (req, res, next) => {
+  try {
+    //define the schema
+    const schema = Joi.object({
+      email: SHORTSTRREQ.email({ minDomainSegments: 2 }),
+      password: SHORTSTRREQ,
+    });
+
+    const { error } = schema.validate(req.body);
+
+    error
+      ? res.json({
+          status: "error",
+          message: error.message,
+        })
+      : next();
+  } catch (error) {
+    next(error);
+  }
+};
