@@ -4,6 +4,7 @@ import {
   getAdminByEmail,
   insertAdmin,
   updateAdmin,
+  updateAdminById,
 } from "../../model/admin/AdminModel.js";
 import {
   loginValidation,
@@ -16,8 +17,23 @@ import {
 } from "../../helper/nodemailer.js";
 import { v4 as uuidv4 } from "uuid";
 import { createAcessJWT, createRefreshJWT } from "../../helper/jwt.js";
-import { auth } from "../../middleware/authMiddleware.js";
+import { auth, refreshAuth } from "../../middleware/authMiddleware.js";
+import { deleteSession } from "../../model/Session/SessionModel.js";
 const router = express.Router();
+
+//get admin details
+
+router.get("/", auth, (req, res, next) => {
+  try {
+    res.json({
+      status: "success",
+      message: "here is the user info",
+      user: req.userInfo,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 // create new admin
 
@@ -53,26 +69,16 @@ router.post("/", auth, newAdminValidation, async (req, res, next) => {
       });
       return;
     }
+    res.json({
+      status: "error",
+      message: "Unable to add new admin, Please try agian later",
+    });
   } catch (error) {
     if (error.message.includes("E11000 duplicate key error")) {
       //   error.statusCode = 401;
       error.message =
         " This email is already used by Another Admin, Use different email or reset your password";
     }
-    next(error);
-  }
-});
-
-//get admin details
-
-router.get("/", auth, (req, re, next) => {
-  try {
-    res.json({
-      status: "success",
-      message: "here is the user info",
-      user: req.userInfo,
-    });
-  } catch (error) {
     next(error);
   }
 });
@@ -149,5 +155,27 @@ router.post("/sign-in", loginValidation, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+
+  // return the refreshJWT
+  router.get("/get-accessjwt", refreshAuth);
+
+  //logout
+  router.post("/logout", async (req, res, next) => {
+    try {
+      const { accessJWT, refreshJWT, _id } = req.body;
+
+      accessJWT && deleteSession(accessJWT);
+
+      if (refreshJWT && _id) {
+        const dt = await updateAdminById({ _id, refreshJWT: "" });
+      }
+
+      res.json({
+        status: "success",
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
 });
 export default router;

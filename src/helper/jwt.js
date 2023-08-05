@@ -23,3 +23,7 @@ export const createRefreshJWT = async (email) => {
   console.log(dt);
   return refreshJWT;
 };
+
+export const verifyRefreshJWT = (token) => {
+  return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+};
