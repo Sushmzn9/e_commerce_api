@@ -91,3 +91,24 @@ export const updateCatValidation = (req, res, next) => {
     next(error);
   }
 };
+
+export const PayValidation = (req, res, next) => {
+  try {
+    //define the schema
+    const schema = Joi.object({
+      title: SHORTSTRREQ,
+      description: SHORTSTRREQ,
+    });
+
+    const { error } = schema.validate(req.body);
+
+    error
+      ? res.json({
+          status: "error",
+          message: error.message,
+        })
+      : next();
+  } catch (error) {
+    next(error);
+  }
+};

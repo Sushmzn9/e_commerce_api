@@ -4,14 +4,14 @@ import { insertNewSession } from "../model/Session/SessionModel.js";
 
 export const createAcessJWT = async (email) => {
   const token = jwt.sign({ email }, process.env.JWT_ACCESS_SECRET, {
-    expiresIn: "15m",
+    expiresIn: "30d",
   });
 
   await insertNewSession({ token, associate: email });
   return token;
 };
 export const verifyAccessJWT = (token) => {
-  return jwt.verify(token, process.env.JET_ACCESS_SECRET);
+  return jwt.verify(token, process.env.JWT_ACCESS_SECRET);
 };
 
 export const createRefreshJWT = async (email) => {

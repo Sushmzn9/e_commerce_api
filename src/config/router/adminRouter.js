@@ -31,6 +31,7 @@ router.get("/", auth, (req, res, next) => {
       user: req.userInfo,
     });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 });
@@ -39,7 +40,7 @@ router.get("/", auth, (req, res, next) => {
 
 router.post("/", auth, newAdminValidation, async (req, res, next) => {
   try {
-    console.log(req.body);
+    // console.log(req.body);
 
     // encrypt password
     const { password } = req.body;

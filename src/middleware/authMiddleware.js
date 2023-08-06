@@ -19,7 +19,7 @@ export const auth = async (req, res, next) => {
     // 3. extract the email and get user by email
     if (decoded?.email) {
       //4. check if user is active
-      const user = await getAdminByEmail(decoded.email);
+      const user = await getAdminByEmail({ email: decoded.email });
 
       if (user?._id && user?.status === "active") {
         user.refreshJWT = undefined;

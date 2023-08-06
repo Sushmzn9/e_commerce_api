@@ -4,6 +4,8 @@ export const insertAdmin = (obj) => {
   return adminSchema(obj).save();
 };
 export const getAdminByEmail = (email) => {
+  console.log(email);
+
   return adminSchema.findOne(email);
 };
 
