@@ -6,6 +6,10 @@ import {
   insertPayment,
   updatePaymentById,
 } from "../../model/Payment/PaymentModel.js";
+import {
+  newPOValidation,
+  updatePOValidation,
+} from "../../middleware/joiValidation.js";
 const router = express.Router();
 
 router.get("/", async (req, res, next) => {
@@ -21,7 +25,7 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post("/", async (req, res, next) => {
+router.post("/", newPOValidation, async (req, res, next) => {
   try {
     console.log(req.body);
     const result = await insertPayment(req.body);
@@ -31,7 +35,7 @@ router.post("/", async (req, res, next) => {
           message: "New Payment has been added ",
         })
       : res.json({
-          status: "Error",
+          status: "error",
           message: "Error, unable to add ",
         });
   } catch (error) {
@@ -39,7 +43,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.put("/", async (req, res, next) => {
+router.put("/", updatePOValidation, async (req, res, next) => {
   try {
     const result = await updatePaymentById(req.body);
 

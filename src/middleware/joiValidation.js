@@ -2,6 +2,9 @@ import Joi from "joi";
 
 const SHORTSTRREQ = Joi.string().min(3).max(100).required();
 const SHORTSTR = Joi.string().min(3).max(100);
+const LONGSTR = Joi.string().min(3).max(10000);
+const NUM = Joi.number();
+const NUMREQ = Joi.number().required();
 
 export const newAdminValidation = (req, res, next) => {
   try {
@@ -92,12 +95,67 @@ export const updateCatValidation = (req, res, next) => {
   }
 };
 
-export const PayValidation = (req, res, next) => {
+// ======== payment options
+export const newPOValidation = (req, res, next) => {
   try {
     //define the schema
     const schema = Joi.object({
+      status: SHORTSTRREQ,
       title: SHORTSTRREQ,
       description: SHORTSTRREQ,
+    });
+
+    const { error } = schema.validate(req.body);
+
+    error
+      ? res.json({
+          status: "error",
+          message: error.message,
+        })
+      : next();
+  } catch (error) {
+    next(error);
+  }
+};
+export const updatePOValidation = (req, res, next) => {
+  try {
+    //define the schema
+    const schema = Joi.object({
+      _id: SHORTSTRREQ,
+      status: SHORTSTRREQ,
+      title: SHORTSTRREQ,
+      description: SHORTSTRREQ,
+    });
+
+    const { error } = schema.validate(req.body);
+
+    error
+      ? res.json({
+          status: "error",
+          message: error.message,
+        })
+      : next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+///product Validation
+
+export const newProductValidation = (req, res, next) => {
+  try {
+    //define the schema
+    const schema = Joi.object({
+      name: SHORTSTRREQ,
+      status: SHORTSTRREQ,
+      sku: SHORTSTRREQ,
+      parentCat: SHORTSTRREQ,
+      description: LONGSTR,
+      salesPrice: NUM,
+      qty: NUMREQ,
+      price: NUMREQ,
+      salesEndDate: SHORTSTR.allow("", null),
+      salesStartDate: SHORTSTR.allow("", null),
     });
 
     const { error } = schema.validate(req.body);

@@ -24,6 +24,8 @@ import { auth } from "./src/middleware/authMiddleware.js";
 app.use("/api/v1/category", auth, categoryRouter);
 import paymentRouter from "./src/config/router/paymentRouter.js";
 app.use("/api/v1/payment", auth, paymentRouter);
+import productRouter from "./src/config/router/productRouter.js";
+app.use("/api/v1/product", auth, productRouter);
 
 app.get("/", (req, res) => {
   try {
