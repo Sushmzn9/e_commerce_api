@@ -6,6 +6,9 @@ export const insertproduct = (obj) => {
 export const getproduct = () => {
   return productSchema.find();
 };
+export const getProductById = (_id) => {
+  return productSchema.findById(_id);
+};
 export const updateproductById = ({ _id, ...rest }) => {
   return productSchema.findByIdAndUpdate(_id, rest);
 };

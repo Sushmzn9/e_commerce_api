@@ -145,6 +145,7 @@ export const updatePOValidation = (req, res, next) => {
 export const newProductValidation = (req, res, next) => {
   try {
     //define the schema
+    req.body.salesPrice = req.body.salesPrice || 0;
     const schema = Joi.object({
       name: SHORTSTRREQ,
       status: SHORTSTRREQ,
@@ -159,6 +160,48 @@ export const newProductValidation = (req, res, next) => {
     });
 
     const { error } = schema.validate(req.body);
+
+    error
+      ? res.json({
+          status: "error",
+          message: error.message,
+        })
+      : next();
+  } catch (error) {
+    next(error);
+  }
+};
+export const updateProductValidation = (req, res, next) => {
+  try {
+    //define the schema
+    req.body.salesPrice = req.body.salesPrice || 0;
+    req.body.salesStartDate =
+      req.body.salesStartDate === "null" || !req.body.salesStartDate
+        ? null
+        : req.body.salesStartDate;
+
+    req.body.salesStartDate =
+      req.body.salesEndDate === "null" || !req.body.salesEndDate
+        ? null
+        : req.body.salesEndDate;
+
+    const schema = Joi.object({
+      _id: SHORTSTRREQ,
+      name: SHORTSTRREQ,
+      status: SHORTSTRREQ,
+      parentCat: SHORTSTRREQ,
+      description: LONGSTR,
+      salesPrice: NUM,
+      qty: NUMREQ,
+      price: NUMREQ,
+      salesEndDate: SHORTSTR.allow("", null),
+      salesStartDate: SHORTSTR.allow("", null),
+      images: LONGSTR.allow(""),
+      thumbnail: LONGSTR.allow(""),
+    });
+
+    const { error } = schema.validate(req.body);
+    req.body.images = req.body.images.split(",");
 
     error
       ? res.json({

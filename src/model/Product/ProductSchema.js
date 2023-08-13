@@ -49,7 +49,17 @@ const productSchema = new mongoose.Schema(
       unique: true,
       required: true,
     },
+    thumbnail: {
+      type: String,
+      // required: true,
+    },
+    images: [
+      {
+        type: String,
+      },
+    ],
   },
+
   {
     timestamps: true,
   }

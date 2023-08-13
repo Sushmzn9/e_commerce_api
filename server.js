@@ -3,9 +3,14 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import path from "path";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
+const __dirname = path.resolve();
+console.log(__dirname);
+
+app.use(express.static(path.join(__dirname + "/public")));
 
 import { mongoConnect } from "./src/config/mongoConfig.js";
 
