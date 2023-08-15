@@ -46,8 +46,8 @@ router.get("/:_id?", async (req, res, next) => {
   try {
     const { _id } = req.params;
     console.log(_id);
-    const products = _id ? await getProductById(_id) : await getproduct();
 
+    const products = _id ? await getProductById(_id) : await getproduct();
     res.json({
       status: "success",
       message: "Here are the products",
@@ -125,11 +125,12 @@ router.put(
   }
 );
 
-router.delete("/:_id", async (req, res, next) => {
+router.delete(`/:_id`, async (req, res, next) => {
   try {
     const { _id } = req.params;
 
     const result = await deleteproductById(_id);
+    console.log(result, "1234567");
 
     result?._id
       ? res.json({
