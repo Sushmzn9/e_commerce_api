@@ -8,7 +8,9 @@ export const getAdminByEmail = (email) => {
 
   return adminSchema.findOne(email);
 };
-
+export const getAdminDisplay = () => {
+  return adminSchema.find();
+};
 export const getOneAdmin = (filter) => {
   return adminSchema.findOne(filter);
 };

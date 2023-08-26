@@ -31,6 +31,9 @@ import paymentRouter from "./src/config/router/paymentRouter.js";
 app.use("/api/v1/payment", auth, paymentRouter);
 import productRouter from "./src/config/router/productRouter.js";
 app.use("/api/v1/product", auth, productRouter);
+import adminDisplayRouter from "./src/config/router/adminDisplayRouter.js";
+
+app.use("/api/v1/admindisplay", adminDisplayRouter);
 
 app.get("/", (req, res) => {
   try {
