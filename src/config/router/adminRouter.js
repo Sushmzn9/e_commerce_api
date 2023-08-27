@@ -2,6 +2,8 @@ import express from "express";
 import { comparePassword, hashPassword } from "../../helper/bcrypt.js";
 import {
   getAdminByEmail,
+  getAdminById,
+  getOneAdmin,
   insertAdmin,
   updateAdmin,
   updateAdminById,
@@ -36,6 +38,65 @@ router.get("/", auth, (req, res, next) => {
   }
 });
 
+//update userInfo
+router.put("/", auth, async (req, res, next) => {
+  try {
+    const { _id, password, ...rest } = req.body;
+    const user = await getAdminById(_id);
+    console.log(user);
+    //check the password
+    const isMatched = comparePassword(password, user.password);
+    console.log(isMatched);
+    console.log(password, user.password);
+    if (isMatched) {
+      const result = await updateAdminById(_id, rest);
+      result?._id
+        ? res.json({
+            status: "success",
+            message: "The Admin has been updated",
+          })
+        : res.json({
+            status: "error",
+            message: "Error, Unable to update Admin.",
+          });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.put("/change-password", auth, async (req, res, next) => {
+  console.log(req.body);
+  try {
+    const { _id } = req.userInfo;
+    const { password, newPassword } = req.body;
+    const user = await getAdminById({ _id });
+    if (user?._id) {
+      const isMatched = comparePassword(password, user.password);
+      console.log(isMatched);
+      if (isMatched) {
+        const pp = hashPassword(newPassword);
+
+        const result = await updateAdmin({ _id }, { password: pp });
+        console.log(result);
+
+        if (result?._id) {
+          res.json({
+            status: "success",
+            message: "Password is succesfully changed",
+          });
+
+          res.json({
+            status: "error",
+            message: "error to update",
+          });
+        }
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 // create new admin
 
 router.post("/", auth, newAdminValidation, async (req, res, next) => {
