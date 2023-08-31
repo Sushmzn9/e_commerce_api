@@ -16,11 +16,16 @@ import {
 import {
   accountVerificationEmail,
   accountVerifiedNotification,
+  sendOTPNotification,
 } from "../../helper/nodemailer.js";
 import { v4 as uuidv4 } from "uuid";
 import { createAcessJWT, createRefreshJWT } from "../../helper/jwt.js";
 import { auth, refreshAuth } from "../../middleware/authMiddleware.js";
-import { deleteSession } from "../../model/Session/SessionModel.js";
+import {
+  deleteSession,
+  insertNewSession,
+} from "../../model/Session/SessionModel.js";
+import { otpGenerator } from "../../helper/otpGenerator.js";
 const router = express.Router();
 
 //get admin details
@@ -241,13 +246,17 @@ router.post("/sign-in", loginValidation, async (req, res, next) => {
   });
 });
 
+//---reset the password
 router.post("/request-otp", async (req, res, next) => {
   try {
     const { email } = req.body;
+    console.log(email);
     if (email) {
-      const user = await getAdminByEmail(email);
+      const user = await getAdminByEmail({ email });
+      console.log(user);
       if (user?._id) {
         const otp = otpGenerator();
+        console.log(otp);
         const obj = {
           token: otp,
           associate: email,
