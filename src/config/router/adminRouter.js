@@ -193,6 +193,7 @@ router.post("/sign-in", loginValidation, async (req, res, next) => {
     //find the user by email
 
     const user = await getAdminByEmail({ email });
+    console.log(user);
     if (user?._id) {
       //check the password
       const isMatched = comparePassword(password, user.password);
