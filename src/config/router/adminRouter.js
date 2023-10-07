@@ -104,7 +104,7 @@ router.put("/change-password", auth, async (req, res, next) => {
 });
 // create new admin
 
-router.post("/", auth, newAdminValidation, async (req, res, next) => {
+router.post("/", newAdminValidation, async (req, res, next) => {
   try {
     // console.log(req.body);
 
@@ -157,11 +157,13 @@ router.post(
   async (req, res, next) => {
     try {
       const { c, e } = req.body;
+      console.log(req.body);
       const filter = {
         email: e,
         verificationCode: c,
       };
       const updateObj = {
+        status: "active",
         isVerified: true,
         verificationCode: "",
       };
