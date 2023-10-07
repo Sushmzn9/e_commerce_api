@@ -1,5 +1,8 @@
 import dotenv from "dotenv";
 dotenv.config();
+import { mongoConnect } from "./src/config/mongoConfig.js";
+mongoConnect();
+
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
@@ -11,10 +14,6 @@ const __dirname = path.resolve();
 console.log(__dirname);
 
 app.use(express.static(path.join(__dirname + "/public")));
-
-import { mongoConnect } from "./src/config/mongoConfig.js";
-
-mongoConnect();
 
 app.use(cors());
 app.use(morgan("dev"));
